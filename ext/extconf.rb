@@ -8,6 +8,10 @@ end
 
 dir_config('curl')
 
+# On Windows, curb_multi.c calls winsock APIs (closesocket, WSASocket,
+# WSADuplicateSocket) directly, so the extension must link ws2_32 itself.
+have_library('ws2_32') if $mswin or $mingw
+
 if find_executable('curl-config')
   $CFLAGS << " #{`curl-config --cflags`.strip} -g"
   if ENV['STATIC_BUILD']
